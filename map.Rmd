@@ -1,0 +1,29 @@
+---
+title: "Experiencing Leaflet in Rmarkdown for Data Science class"
+author: "Paul Charlet"
+date: "October 20, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r echo=FALSE, message=FALSE}
+library(magrittr)
+library(leaflet)
+df <- data.frame(
+        lng =-180:180,
+        lat=sin(seq(-pi,pi,length.out=361))*45,
+        col=as.character(colorRampPalette(c("green","red"))(361)),
+        stringsAsFactors = FALSE
+        )
+df %>%
+        leaflet()%>%
+        addTiles()%>%
+        addCircleMarkers(radius=1,fill = TRUE,color  = df$col,clusterOptions = markerClusterOptions())%>%
+        addRectangles(min(df$lng),min(df$lat),max(df$lng),max(df$lat),popup = "arbitrary sinus zone",weight = 0)%>%
+        addRectangles(min(df$lng),min(df$lat),max(df$lng),-90,weight = 0,color = "red",popup = "non arbitrary sinus zone")%>%
+                addRectangles(min(df$lng),max(df$lat),max(df$lng),+90,weight = 0,color = "red",popup = "non arbitrary sinus zone")
+```
